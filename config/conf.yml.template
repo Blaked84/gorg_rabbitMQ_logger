@@ -5,12 +5,22 @@ admin_user_id: my.user@my_org.com
 authorizer: DefaultAuthorizer
 
 message_handler_map:
-  request.gapps.create: DefaultMessageHandler
+  logs: LogMessageHandler
 
-rabbitmq_host: localhost
-rabbitmq_port: 5672
-rabbitmq_queue_name: logs
-rabbitmq_deferred_time: 1800000
-exchange_name: exchange
-rabbitmq_user: my_user
-rabbitmq_password: P4ssWord
+rabbitmq:
+  host: localhost
+  port: 5672
+  queue_name: logs
+  deferred_time: 1800000
+  exchange_name: exchange
+  user: my_user
+  password: P4ssWord
+
+database:
+  adapter: mysql2
+  encoding: utf8
+  host: localhost
+  port: 3306
+  database: my_db
+  username: my_user
+  password: my_P4ssWord

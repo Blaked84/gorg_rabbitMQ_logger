@@ -5,56 +5,50 @@ require 'yaml'
 require 'gorg_service'
 require 'securerandom'
 require 'active_record'
-require  'sqlite3' # or 'pg' or 'mysql2'
+require  'mysql2' # or 'pg' or 'sqlite3'
 
 
 
-
+#Load apps file and conf
 BASE_PATH=File.dirname(__FILE__)
 Dir[File.join(BASE_PATH,"app","**","*.rb")].each {|file| require file }
 
-class AppConfig
-  def self.value_at key
-    @conf||=YAML::load(File.open(File.join(BASE_PATH,'config','conf.yml')))
-    @conf[key]
-  end
-end
+CONFIG ||= YAML::load(File.open(File.join(BASE_PATH,'config','conf.yml')))
 
-
-
+# Database configuration
 ActiveRecord::Base.establish_connection(
-  adapter:  'mysql2', # or 'postgresql' or 'sqlite3'
-  host:     'localhost',
-  database: 'gorg_rbmq_logger',
-  username: 'gorg_rbmq_logger',
-  password: 'gorg_rbmq_logger'
+  adapter:  CONFIG["database"]["adapter"], # or 'postgresql' or 'sqlite3'
+  host:     CONFIG["database"]["host"],
+  port:     CONFIG["database"]["port"],
+  database: CONFIG["database"]["database"],
+  username: CONFIG["database"]["username"],
+  password: CONFIG["database"]["password"]
 )
 
+#Gorg RabbitMQ conf
 GorgService.configure do |c|
   # application name for display usage
-  c.application_name="My Application Name"
+  c.application_name=CONFIG["application_name"]
   # application id used to find message from this producer
-  c.application_id="my_app_id"
+  c.application_id=CONFIG["application_id"]
 
   ## RabbitMQ configuration
   # 
   ### Authentification
   # If your RabbitMQ server is password protected put it here
   #
-  # c.rabbitmq_user = nil
-  # c.rabbitmq_password = nil
+  c.rabbitmq_user = CONFIG["rabbitmq"]["user"]
+  c.rabbitmq_password = CONFIG["rabbitmq"]["password"]
   #  
   ### Network configuration :
   #
-  # c.rabbitmq_host = "localhost"
-   c.rabbitmq_port = AppConfig.value_at "rabbitmq_port"
-  #
-  #
-  # c.rabbitmq_queue_name = c.application_name
-  # c.rabbitmq_exchange_name = "exchange"
+  c.rabbitmq_host = CONFIG["rabbitmq"]["host"]
+  c.rabbitmq_port = CONFIG["rabbitmq"]["port"]
+  c.rabbitmq_queue_name = CONFIG["rabbitmq"]["queue_name"]
+  c.rabbitmq_exchange_name = CONFIG["rabbitmq"]["exchange_name"]
   #
   # time before trying again on softfail in milliseconds (temporary error)
-  # c.rabbitmq_deferred_time = 1800000 # 30min
+  c.rabbitmq_deferred_time = CONFIG["rabbitmq"]["deferred_time"]
   # 
   # maximum number of try before discard a message
   # c.rabbitmq_max_attempts = 48 # 24h with default deferring delay
@@ -67,7 +61,7 @@ GorgService.configure do |c|
   #   "Another.routing.key" => OtherMessageHandler,
   #   "third.routing.key" => MyMessageHandler,
   # }
-  c.message_handler_map= {"logs" => LogMessageHandler} #TODO : Set my routing hash
+  c.message_handler_map= Hash[CONFIG["message_handler_map"].map{ |k, v| [k, eval(v)] }]
 
  end
 
