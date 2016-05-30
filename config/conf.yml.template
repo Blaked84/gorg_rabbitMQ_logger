@@ -1,0 +1,16 @@
+application_name: rabbyMQLoggerDaemon
+application_id: rmgld
+
+admin_user_id: my.user@my_org.com
+authorizer: DefaultAuthorizer
+
+message_handler_map:
+  request.gapps.create: DefaultMessageHandler
+
+rabbitmq_host: localhost
+rabbitmq_port: 5672
+rabbitmq_queue_name: logs
+rabbitmq_deferred_time: 1800000
+exchange_name: exchange
+rabbitmq_user: my_user
+rabbitmq_password: P4ssWord
