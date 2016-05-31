@@ -8,20 +8,20 @@ Before being used, GorgRabbitMQLogger must be configured. Copy `conf.yml.templat
 
 The database must contain a `logs` table with the following schema : 
 ```
-1,id,INT
-2,data,VARCHAR
-3,event,VARCHAR
-4,event_id,VARCHAR
-5,event_errors,VARCHAR
-6,creation_time,VARCHAR
-7,sender,VARCHAR
+id,INT
+data,VARCHAR
+event,VARCHAR
+event_id,VARCHAR
+event_errors,VARCHAR
+creation_time,VARCHAR
+sender,VARCHAR
 ```
 
 ## Usage
 
 To start the daemon, juste run in the:  
 ```bash
-./logger_daemin.rb
+./logger_daemon.rb
 ```
 ## Development
 
@@ -31,7 +31,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/Zooip/gorg_service.
+Bug reports and pull requests are welcome on GitHub at https://github.com/Blaked84/gorg_rabbitMQ_logger.
 
 
 ## License
