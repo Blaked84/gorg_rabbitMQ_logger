@@ -19,7 +19,7 @@ sender,VARCHAR
 
 ## Usage
 
-To start the daemon, juste run in the:  
+To start the daemon, run in the:  
 ```bash
 ./worker.rb
 ```
@@ -34,5 +34,5 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/Blaked
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+This daemon is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
 
