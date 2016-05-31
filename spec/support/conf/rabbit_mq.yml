@@ -1,0 +1,5 @@
+r_host: localhost
+r_port: 32769
+r_user: 
+r_pass: 
+r_vhost: /

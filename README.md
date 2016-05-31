@@ -21,7 +21,7 @@ sender,VARCHAR
 
 To start the daemon, juste run in the:  
 ```bash
-./logger_daemon.rb
+./worker.rb
 ```
 ## Development
 
