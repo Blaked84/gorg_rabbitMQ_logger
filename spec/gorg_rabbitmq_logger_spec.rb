@@ -4,10 +4,12 @@ require 'active_record'
 require 'gorg_service'
 require 'message_handlers/log_message_handler'
 require 'gorg_message_sender'
+require File.expand_path('../support/conf/rabbitmq_config.rb', __FILE__)
+
 
 ActiveRecord::Base.establish_connection({
   :adapter => "sqlite3",
-  :database => "tests",
+  :database => "tests.sqlite3",
   :dbfile => "logs.sqlite"
   })
 
@@ -29,12 +31,13 @@ ActiveRecord::Schema.define do
 end
 
 puts "Sending message"
-sender=GorgMessageSender.new(host: "localhost",
- port: 32769,
- user: nil,
- pass: nil,
+sender=GorgMessageSender.new(
+ host: RabbitmqConfig.value_at("r_host"),
+ port: RabbitmqConfig.value_at("r_port"),
+ user: RabbitmqConfig.value_at("r_user"),
+ pass: RabbitmqConfig.value_at("r_pass"),
+ vhost: RabbitmqConfig.value_at("r_vhost"),
  exchange_name: "exchange",
- vhost: "/",
  app_id: "logger-test",
  durable_exchange: true)
 sender.send({this_is: "my data hash"},
@@ -50,21 +53,15 @@ my_service.start
 sleep(1)
 my_service.stop
 
-log = Log.last
-puts log.data
 describe LogMessageHandler do
+  log = Log.last
   it "save the message to the database" do
    expect(log.event).to eq("logs")
    expect(log.event_id).to eq("8c4abe62-26fe-11e6-b67b-9e71128cae77")
-   expect(log.data).to eq({this_is: "my data hash"}.to_h.to_s)
+   expect(log.data).to eq({this_is: "my data hash"}.to_s)
    expect(log.event_errors).to eq("[]")
    expect(log.creation_time).to eq(DateTime.new(2084,05,10,01,57,00).to_s)
    expect(log.sender).to eq("test-logger")
  end 
 
 end
-
-# describe "Create log entry" do
-
-#   expect(initialise(msg)).to eq({test_data: "testing_message"})
-# end
